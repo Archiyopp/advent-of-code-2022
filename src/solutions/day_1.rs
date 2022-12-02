@@ -1,16 +1,12 @@
 pub fn day_1(input: String) -> [i32; 3] {
-    let mut vector = input
+    let mut vector: Vec<i32> = input
         .trim()
         .split("\r\n\r\n")
-        .map(|s| {
-            s.lines()
-                .map(|x| x.parse::<i32>().unwrap_or_default())
-                .sum()
-        })
-        .collect::<Vec<i32>>();
+        .map(|s| s.lines().flat_map(str::parse::<i32>).sum())
+        .collect();
     vector.sort();
     [
-        vector.pop().unwrap_or_default(),
+        vector.pop().unwrap_or_default(), // max value
         vector.pop().unwrap_or_default(),
         vector.pop().unwrap_or_default(),
     ]
