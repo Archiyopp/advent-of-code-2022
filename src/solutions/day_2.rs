@@ -8,11 +8,9 @@ fn problem_one(input: String) -> u32 {
     input
         .lines()
         .map(|s| {
-            let [other, mine]: [Hand; 2] = s
-                .split_whitespace()
-                .map(|x| Hand::from(x.to_string()))
-                .collect::<Vec<Hand>>()
-                .try_into()
+            let (other, mine) = s
+                .split_once(' ')
+                .map(|(a, b)| (Hand::from(a.to_string()), Hand::from(b.to_string())))
                 .expect("Invalid input");
 
             let outcome = mine.get_outcome(&other);
@@ -25,15 +23,10 @@ fn problem_two(input: String) -> u32 {
     input
         .lines()
         .map(|s| {
-            let [other, outcome]: [String; 2] = s
-                .split_whitespace()
-                .map(String::from)
-                .collect::<Vec<String>>()
-                .try_into()
-                .expect("Invalid input");
+            let (other, outcome) = s.split_once(' ').expect("invalid input");
 
-            let other = Hand::from(other);
-            let outcome = Outcome::from(outcome);
+            let other = Hand::from(other.to_string());
+            let outcome = Outcome::from(outcome.to_string());
 
             outcome.get_points() + other.get_points_from_outcome(&outcome)
         })
