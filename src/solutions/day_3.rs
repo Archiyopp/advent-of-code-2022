@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 use advent_of_code_2022::read_file;
 
@@ -16,8 +16,8 @@ fn problem_one(input: String) -> u32 {
         .lines()
         .map(|l| l.split_at(l.len() / 2))
         .map(|(a, b)| {
-            let a = BTreeSet::from_iter(a.chars());
-            let b = BTreeSet::from_iter(b.chars());
+            let a = HashSet::<_>::from_iter(a.chars());
+            let b = HashSet::<_>::from_iter(b.chars());
             a.intersection(&b)
                 .next()
                 .map(|c| get_priority(*c))
@@ -30,7 +30,7 @@ fn problem_two(input: String) -> u32 {
     input
         .lines()
         .tuples::<(_, _, _)>()
-        .map(|(a, b, c)| [a, b, c].map(|l| BTreeSet::from_iter(l.chars())))
+        .map(|(a, b, c)| [a, b, c].map(|l| HashSet::<_>::from_iter(l.chars())))
         .map(|[a, b, c]| {
             a.intersection(&b)
                 .find(|ch| c.contains(ch))
