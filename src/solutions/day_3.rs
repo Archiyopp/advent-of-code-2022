@@ -1,4 +1,5 @@
-use std::collections::HashMap;
+use itertools::Itertools;
+use std::collections::BTreeSet;
 
 use advent_of_code_2022::read_file;
 
@@ -11,51 +12,32 @@ pub fn day_3() {
 }
 
 fn problem_one(input: String) -> u32 {
-    let mut priorities = 0;
-    for line in input.lines() {
-        let half_len = line.split_at(line.len() / 2);
-        let mut map = HashMap::new();
-        for c in half_len.0.chars() {
-            map.entry(c).or_insert(true);
-        }
-        for c in half_len.1.chars() {
-            if map.contains_key(&c) {
-                priorities += get_priority(c);
-                break;
-            }
-        }
-    }
-
-    priorities
+    input
+        .lines()
+        .map(|l| l.split_at(l.len() / 2))
+        .map(|(a, b)| {
+            let a = BTreeSet::from_iter(a.chars());
+            let b = BTreeSet::from_iter(b.chars());
+            a.intersection(&b)
+                .next()
+                .map(|c| get_priority(*c))
+                .expect("No intersection")
+        })
+        .sum()
 }
 
 fn problem_two(input: String) -> u32 {
-    let mut priorities = 0;
-    let mut iter = 0;
-    let mut map = HashMap::new();
-    for line in input.lines() {
-        if iter == 3 {
-            iter = 0;
-            map.clear();
-        }
-        iter += 1;
-        for c in line.chars() {
-            let count = map
-                .entry(c)
-                .and_modify(|c| {
-                    if *c == iter - 1 {
-                        *c += 1;
-                    }
-                })
-                .or_insert_with(|| u32::from(iter == 1));
-            if *count == 3 {
-                priorities += get_priority(c);
-                map.clear();
-                break;
-            }
-        }
-    }
-    priorities
+    input
+        .lines()
+        .tuples::<(_, _, _)>()
+        .map(|(a, b, c)| [a, b, c].map(|l| BTreeSet::from_iter(l.chars())))
+        .map(|[a, b, c]| {
+            a.intersection(&b)
+                .find(|ch| c.contains(ch))
+                .map(|c| get_priority(*c))
+                .expect("No intersection")
+        })
+        .sum()
 }
 
 fn get_priority(c: char) -> u32 {
