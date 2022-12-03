@@ -1,6 +1,6 @@
 use advent_of_code_2022::read_file;
 
-use crate::solutions::{day_1::day_1, day_2::day_2};
+use crate::solutions::{day_1::day_1, day_2::day_2, day_3::day_3};
 
 pub mod solutions;
 fn main() {
@@ -11,4 +11,5 @@ fn main() {
         first_day_result.iter().sum::<i32>()
     );
     day_2(read_file("inputs", "second"));
+    day_3();
 }
