@@ -1,7 +1,6 @@
 use advent_of_code_2022::read_file;
 
 pub fn day_4() {
-    println!("Day 4");
     let input = read_file("inputs", "fourth");
     println!(
         "Day 4: First answer: {}, Second answer: {}",
@@ -10,37 +9,37 @@ pub fn day_4() {
     );
 }
 
-fn problem_one(input: String) -> u32 {
+fn problem_one(input: String) -> usize {
     input
         .lines()
         .flat_map(parse_line)
-        .map(|[a, b]| u32::from(check_ranges(a, b) || check_ranges(b, a)))
-        .sum()
+        .filter(|[a, b]| check_ranges(a, b) || check_ranges(b, a))
+        .count()
 }
 
-fn problem_two(input: String) -> u32 {
+fn problem_two(input: String) -> usize {
     input
         .lines()
         .flat_map(parse_line)
-        .map(|[a, b]| u32::from(check_overlap(a, b)))
-        .sum()
+        .filter(|[a, b]| check_overlap(a, b))
+        .count()
 }
 
 fn parse_line(line: &str) -> Option<[[u32; 2]; 2]> {
     line.split_once(',').map(|(a, b)| {
         [a, b].map(|s| {
             s.split_once('-')
-                .map(|(a, b)| [a, b].map(|n| str::parse::<u32>(n).unwrap_or(0)))
+                .map(|(a, b)| [a, b].map(|n| n.parse::<u32>().expect("Not a number")))
                 .expect("Invalid input")
         })
     })
 }
 
-fn check_ranges(a: [u32; 2], b: [u32; 2]) -> bool {
+fn check_ranges(a: &[u32; 2], b: &[u32; 2]) -> bool {
     a[0] >= b[0] && a[1] <= b[1]
 }
 
-fn check_overlap(a: [u32; 2], b: [u32; 2]) -> bool {
+fn check_overlap(a: &[u32; 2], b: &[u32; 2]) -> bool {
     a[1] >= b[0] && a[0] <= b[1]
 }
 
