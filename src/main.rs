@@ -1,6 +1,8 @@
 use advent_of_code_2022::read_file;
 
-use crate::solutions::{day_1::day_1, day_2::day_2, day_3::day_3, day_4::day_4, day_5::day_5};
+use crate::solutions::{
+    day_1::day_1, day_2::day_2, day_3::day_3, day_4::day_4, day_5::day_5, day_6::day_6,
+};
 
 pub mod solutions;
 fn main() {
@@ -14,4 +16,5 @@ fn main() {
     day_3();
     day_4();
     day_5();
+    day_6();
 }
