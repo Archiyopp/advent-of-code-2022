@@ -39,11 +39,10 @@ fn solution(input: &str, length: usize) -> usize {
         if let Some(end) = marker.find(c) {
             marker.drain(..end + 1);
         }
-        marker.push(c);
-
-        if marker.len() == length {
+        if marker.len() == length - 1 {
             return i + 1;
         }
+        marker.push(c);
     }
     0
 }
@@ -81,12 +80,14 @@ mod tests {
     #[test]
     fn problem_one_test() {
         assert_eq!(solution(&read_file("examples", "6"), 4), 7);
-        assert_eq!(solution("nppdvjthqldpwncqszvftbrmjlhg", 4), 6);
+        assert_eq!(solution2("nppdvjthqldpwncqszvftbrmjlhg", 4), 6);
+        assert_eq!(solution3("nppdvjthqldpwncqszvftbrmjlhg", 4), 6)
     }
 
     #[test]
     fn problem_two_test() {
         assert_eq!(solution(&read_file("examples", "6"), 14), 19);
-        assert_eq!(solution("nppdvjthqldpwncqszvftbrmjlhg", 14), 23);
+        assert_eq!(solution2(&read_file("examples", "6"), 14), 19);
+        assert_eq!(solution3("nppdvjthqldpwncqszvftbrmjlhg", 14), 23);
     }
 }
