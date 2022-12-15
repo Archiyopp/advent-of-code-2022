@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use advent_of_code_2022::read_file;
+use itertools::Itertools;
 
 pub fn day_9() {
     let input = read_file("inputs", "9");
@@ -12,10 +13,10 @@ pub fn day_9() {
 }
 
 fn solution(input: &str, length: usize) -> usize {
-    let mut map: HashSet<(i32, i32)> = HashSet::new();
-    let mut init_vector: Vec<(i32, i32)> = Vec::with_capacity(length);
+    let mut map: HashSet<Coordinate> = HashSet::new();
+    let mut init_vector: Vec<Coordinate> = Vec::with_capacity(length);
     for _ in 0..length {
-        init_vector.push((0, 0));
+        init_vector.push(Coordinate::new(0, 0));
     }
     input
         .lines()
@@ -26,14 +27,12 @@ fn solution(input: &str, length: usize) -> usize {
                 if let Some(last) = coords.last_mut() {
                     *last = d.move_coord(*last);
                 }
-                for (i, head) in coords.clone().iter().enumerate().rev() {
-                    // prevent overflow
-                    if i == 0 {
-                        break;
-                    }
+
+                for i in (1..coords.len()).rev() {
+                    let head = coords[i];
                     match coords.get_mut(i - 1) {
                         Some(tail) => {
-                            *tail = move_tail(*tail, *head);
+                            *tail = move_tail(*tail, head);
                             if i == 1 {
                                 map.insert(*tail);
                             };
@@ -47,19 +46,27 @@ fn solution(input: &str, length: usize) -> usize {
     map.len()
 }
 
-fn move_tail(tail: (i32, i32), head: (i32, i32)) -> (i32, i32) {
-    let (x, y) = tail;
-    let (x2, y2) = head;
-    if x >= x2 + 2 {
-        (x2 + 1, y2)
-    } else if x <= x2 - 2 {
-        (x2 - 1, y2)
-    } else if y >= y2 + 2 {
-        (x2, y2 + 1)
-    } else if y <= y2 - 2 {
-        (x2, y2 - 1)
+fn move_tail(tail: Coordinate, head: Coordinate) -> Coordinate {
+    if tail.x.abs_diff(head.x) > 1 || tail.y.abs_diff(head.y) > 1 {
+        Coordinate::new(compare_pos(head.x, tail.x), compare_pos(head.y, tail.y))
     } else {
         tail
+    }
+}
+
+fn compare_pos(lead: i32, follow: i32) -> i32 {
+    follow + (lead - follow).signum()
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+struct Coordinate {
+    x: i32,
+    y: i32,
+}
+
+impl Coordinate {
+    fn new(x: i32, y: i32) -> Coordinate {
+        Coordinate { x, y }
     }
 }
 
@@ -84,12 +91,12 @@ impl From<&str> for Direction {
 }
 
 impl Direction {
-    fn move_coord(&self, coords: (i32, i32)) -> (i32, i32) {
+    fn move_coord(&self, coords: Coordinate) -> Coordinate {
         match self {
-            Direction::Up => (coords.0, coords.1 + 1),
-            Direction::Down => (coords.0, coords.1 - 1),
-            Direction::Right => (coords.0 + 1, coords.1),
-            Direction::Left => (coords.0 - 1, coords.1),
+            Direction::Up => Coordinate::new(coords.x, coords.y + 1),
+            Direction::Down => Coordinate::new(coords.x, coords.y - 1),
+            Direction::Right => Coordinate::new(coords.x + 1, coords.y),
+            Direction::Left => Coordinate::new(coords.x - 1, coords.y),
         }
     }
 }
