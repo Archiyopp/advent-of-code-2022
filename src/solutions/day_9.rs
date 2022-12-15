@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 use advent_of_code_2022::read_file;
-use itertools::Itertools;
 
 pub fn day_9() {
     let input = read_file("inputs", "9");
